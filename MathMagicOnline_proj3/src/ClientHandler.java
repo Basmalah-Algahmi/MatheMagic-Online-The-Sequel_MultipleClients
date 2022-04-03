@@ -225,7 +225,24 @@ public class ClientHandler implements Runnable {
                        else {
                             outputToClient.writeUTF("300 invalid command");
                             }
-                }//end list command   
+                    }//end list command   
+                    
+                    /*Message command 
+                     * Clients will be able to send each other messages through the server
+                     * 
+                     * */
+                    else if(command.equalsIgnoreCase("message"))
+                    {
+                    	System.out.println("Test");
+                    	outputToClient.writeUTF("Test"); 
+                    	 if(loginsInfo.get(userName).equals("john"))
+                    	 {
+                    		 
+                    		 System.out.println("Message from client\n" + "Sending to " + userName /* + user*/);
+                    		 outputToClient.writeUTF("Message from client\n" + "Sending to " + userName /* + user*/);
+                    		 break;
+                    	 }
+                    }
                 
                 //handle logout command
                 //server still on, the only thing will happened when client logout is that
