@@ -51,7 +51,7 @@ public class ClientHandler implements Runnable {
         String userName="", pwd, messageTo, messageContent;
         
         //run the thread in here
-        try {
+        try{
              inputFromClient =
                     new DataInputStream(socket.getInputStream());
             
@@ -237,7 +237,7 @@ public class ClientHandler implements Runnable {
                        else {
                             outputToClient.writeUTF("300 invalid command");
                             }
-                }//end list command  
+ }//end list command  
                 
                 else if(command.equalsIgnoreCase("message")) 
                 {
@@ -262,6 +262,7 @@ public class ClientHandler implements Runnable {
                     
                 }   
                 }//end message command  
+            
                 
                 //handle logout command
                 //server still on, the only thing will happened when client logout is that
@@ -294,7 +295,7 @@ public class ClientHandler implements Runnable {
             }//end server while loop
             
         }
-        catch(IOException ex) {
+        catch(IOException ex){
             ex.printStackTrace();
         }//end try-catch
         
