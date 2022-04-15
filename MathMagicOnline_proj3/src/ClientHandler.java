@@ -8,8 +8,11 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Scanner;
+import java.util.StringTokenizer;
 
 
 
@@ -20,30 +23,39 @@ public class ClientHandler implements Runnable {
     private ServerSocket serverSocket;  //server's socket
     private int clientNumber;
     private HashMap<String, String> loginsInfo;
+    PrintWriter writer;
+    boolean isloggedin;
+    String name;
+    DataInputStream inputFromClient;
+    DataOutputStream outputToClient;
+    
     
     //create an instance
-    public ClientHandler(int clientNumber, Socket socket, ServerSocket serverSocket, HashMap<String, String> loginsInfo) {
+    public ClientHandler(String clientNumber, Socket socket, ServerSocket serverSocket, HashMap<String, String> loginsInfo) {
         this.socket = socket;
+//        this.clients=clients;
         this.serverSocket = serverSocket;
-        this.clientNumber = clientNumber;
+        this.name = clientNumber;
         this.loginsInfo=loginsInfo;
+        this.name=clientNumber;
+       
     }//end ctor
     
-    
+ 
     //run() method is required by all
     //Runnable implementers
     @Override
     public void run() {
         boolean authorizedUser=false;
         String[] clientCommand;
-        String userName="", pwd;
+        String userName="", pwd, messageTo, messageContent;
         
         //run the thread in here
         try {
-            DataInputStream inputFromClient =
+             inputFromClient =
                     new DataInputStream(socket.getInputStream());
             
-            DataOutputStream outputToClient = 
+             outputToClient = 
                     new DataOutputStream(socket.getOutputStream());
             
             
@@ -225,7 +237,31 @@ public class ClientHandler implements Runnable {
                        else {
                             outputToClient.writeUTF("300 invalid command");
                             }
-                }//end list command   
+                }//end list command  
+                
+                else if(command.equalsIgnoreCase("message")) 
+                {
+                    
+                 // break the string into message and recipient part
+                String recipient = clientCommand[1];
+                String MsgToSend = clientCommand[2];
+               
+ 
+                // search for the recipient in the connected devices list.
+                // ar is the vector storing client of active users
+                for (ClientHandler mc : MultiServerJPB1.clients)
+                {
+                    // if the recipient is found, write on its
+                    // output stream
+                    if (mc.name.equals(recipient) && mc.isloggedin==true)
+                    {
+                        mc.outputToClient.writeUTF(this.name+" : "+MsgToSend);
+                        break;
+                    }
+                    
+                    
+                }   
+                }//end message command  
                 
                 //handle logout command
                 //server still on, the only thing will happened when client logout is that
@@ -235,6 +271,7 @@ public class ClientHandler implements Runnable {
                     System.out.println("logging out the client\n");
                     outputToClient.writeUTF("200 OK");
                     authorizedUser=false; 
+                    this.isloggedin=false;
                 }//end logout command
                 
                 //handle shutdown command//both server and client will be Terminated
@@ -293,6 +330,8 @@ public class ClientHandler implements Runnable {
     
         return fileContent;                    
     }
+
+   
 
 
 

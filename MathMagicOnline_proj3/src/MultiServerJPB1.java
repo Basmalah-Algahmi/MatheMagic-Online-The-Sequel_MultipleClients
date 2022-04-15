@@ -7,14 +7,22 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
 import java.util.Scanner;
+import java.util.Vector;
 
 
 public class MultiServerJPB1 {
     
     private static final int SERVER_PORT = 8765;
+    // Vector to store active clients
+    static Vector<ClientHandler> clients = new Vector<>();
+    
+
     
     public static void main(String[] args) {
         
@@ -64,10 +72,17 @@ public class MultiServerJPB1 {
                 System.out.println("\tHost IP address: "+
                         inetAddress.getHostAddress());
                 
+                System.out.println("\tHost port address: "+
+                        socket.getPort());
+                
                 //create and start new thread for the connection
                 //is a class
-                Thread clientThread = new Thread(
-                        new ClientHandler(clientNumber, socket, serverSocket,loginsInfo));
+                ClientHandler clientHandler=new ClientHandler("client" + clientNumber, socket, serverSocket,loginsInfo);
+                Thread clientThread = new Thread(clientHandler);
+                        
+                // add this client to active clients list
+                 clients.add(clientHandler);
+ 
                 clientThread.start();  
             }//end while           
         }
