@@ -1,0 +1,2 @@
+Side 2.0 2.0: Rectangle’s perimeter is 8.00 and area is 4.00
+radius 2.0: Circle’s circumference is 12.57 and area is 12.57

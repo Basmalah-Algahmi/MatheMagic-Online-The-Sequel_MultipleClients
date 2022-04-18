@@ -1,0 +1,2 @@
+radius 2.0: Circle’s circumference is 12.57 and area is 12.57
+radius 54.0: Circle’s circumference is 339.29 and area is 9160.88
